@@ -18,7 +18,7 @@ var OAuthCode = function(config) {
     this.loginPopupUri  = function(authUri, redirectUri) {
         var win         = window.open(authUri, 'windowname1', 'width=800, height=600'); 
 
-        var pollOAuth   = window.setInterval(function() { 
+        var pollOAuth   = window.setInterval(function() {
             try {
                 console.log(win.document.URL);
                 if (win.document.URL.indexOf(redirectUri) != -1) {
@@ -41,9 +41,14 @@ var oauth = new OAuthCode(config);
         <h1>RingCentral 3-Legged OAuth Demo in Ruby</h1>
 
         <p><input type="button" onclick="oauth.loginPopup()" value="Login with RingCentral"></p>
+        <p><a href='/subscribe'>Subscribe</a></p>
+        <p><a href='/cancel-all'>Cancel all subscriptions</a></p>
 
         <p>Access Token</p>
         <pre style="background-color:#efefef;padding:1em;overflow-x:scroll"><%= token_json %></pre>
+
+        <p>Subscriptions</p>
+        <pre style="background-color:#efefef;padding:1em;overflow-x:scroll"><%= subscriptions %></pre>
 
         <p>More info:</p>
         <ul>
