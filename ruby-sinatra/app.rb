@@ -19,7 +19,7 @@ end
 
 get '/callback' do
   code = params.key?('code') ? params['code'] : ''
-  token = client.authorize_code(code) if code
+  client.authorize_code(code) if code
   ''
 end
 
@@ -33,7 +33,7 @@ get '/subscribe' do
       ],
       deliveryMode: {
         transportType: 'WebHook',
-        address: 'https://textus.ngrok.io/receive'
+        address: 'https://textus.ngrok.io/sms'
       }
     }
   end
@@ -44,7 +44,25 @@ get '/subscribe' do
   redirect back
 end
 
-post '/receive' do
+get '/renew' do
+  response = client.http.get do |req|
+    req.url 'subscription'
+    req.headers['Content-Type'] = 'application/json'
+  end
+
+  record = response.body.to_hash['records'].first
+
+  response = client.http.put do |req|
+    req.url "subscription/#{record["id"]}"
+    req.headers['Content-Type'] = 'application/json'
+    req.body = {}
+  end
+
+  render_index(client)
+  redirect back
+end
+
+post '/sms' do
   if env['HTTP_VALIDATION_TOKEN']
     response.headers['Validation-Token'] = env['HTTP_VALIDATION_TOKEN']
   end
