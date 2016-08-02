@@ -66,7 +66,7 @@ end
 get '/send' do
   client.messages.sms.create(
     from: '+12679230829',
-    to: '+14402125487',
+    to: '+12679230829',
     text: 'Automated test'
   )
 
