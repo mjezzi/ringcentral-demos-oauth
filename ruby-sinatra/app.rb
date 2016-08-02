@@ -1,12 +1,14 @@
 #!ruby
 
 require 'sinatra'
+require "sinatra/reloader"
 require 'multi_json'
 require 'ringcentral_sdk'
 
 require 'pry'
 
 set :port, ENV['MY_APP_PORT']
+register Sinatra::Reloader
 
 # Enter config in .env file
 client = RingCentralSdk::REST::Client.new
@@ -133,9 +135,21 @@ def render_index(client)
       MultiJson.encode(response.body.to_hash, pretty: true)
   end
 
+  phone_numbers = ''
+  if client.http
+    response = client.http.get do |req|
+      req.url 'account/~/phone-number'
+      req.headers['Content-Type'] = 'application/json'
+    end
+
+    phone_numbers = response.body.empty? ? '' :
+      MultiJson.encode(response.body.to_hash, pretty: true)
+  end
+
   erb :index, locals: {
     authorize_uri: client.authorize_url(),
     redirect_uri: client.app_config.redirect_url,
     token_json: token_json,
+    phone_numbers: phone_numbers,
     subscriptions: subscriptions }
 end
