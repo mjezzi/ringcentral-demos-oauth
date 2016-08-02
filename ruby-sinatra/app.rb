@@ -25,7 +25,6 @@ end
 
 get '/subscribe' do
   response = client.http.post do |req|
-  client.http.post do |req|
     req.url 'subscription?aggregated=True'
     req.headers['Content-Type'] = 'application/json'
     req.body = {
